@@ -1,0 +1,92 @@
+{
+  "_version": "1.8.0",
+  "sap.app": {
+    "id": "dlq",
+    "type": "application",
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "dataSources": {
+      "OutboxDeadLetterQueueService": {
+        "uri": "/api/dlq/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "-sourceTemplate": {
+      "id": "ui5template.basicSAPUI5ApplicationProject",
+      "-id": "ui5template.smartTemplate",
+      "-version": "1.40.12"
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "dlq-manage": {
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          },
+          "semanticObject": "DeadOutboxMessages",
+          "action": "manage"
+        }
+      }
+    }
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "minUI5Version": "1.122.0",
+      "libs": {
+        "sap.fe.templates": {}
+      }
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      },
+      "": {
+        "dataSource": "OutboxDeadLetterQueueService",
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server"
+        }
+      }
+    },
+    "routing": {
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "DeadOutboxMessagesList",
+          "target": "DeadOutboxMessagesList"
+        }
+      ],
+      "targets": {
+        "DeadOutboxMessagesList": {
+          "type": "Component",
+          "id": "DeadOutboxMessagesList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings" : {
+              "contextPath" : "/DeadOutboxMessages"
+            }
+          }
+        }
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "fullWidth": true
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}

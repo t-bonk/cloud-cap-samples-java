@@ -20,6 +20,17 @@ cds:
           - "10401010"
       user:
         password: user
+  messaging.services:
+    bupa-messaging:
+      kind: kafka-channel-messaging
+      format: cloudevents
+      connection:
+        properties:
+          useMtls: false
+  outbox:
+    services:
+      DefaultOutboxOrdered:
+        max-attempts: 2
 server.servlet.encoding:
   charset: UTF-8
   force: true
@@ -82,9 +93,6 @@ cds:
 spring:
   config.activate.on-profile: mocked
 cds:
-  messaging.services:
-    bupa-messaging:
-      kind: file-based-messaging
   application.services:
     api-business-partner-mocked:
       model: API_BUSINESS_PARTNER

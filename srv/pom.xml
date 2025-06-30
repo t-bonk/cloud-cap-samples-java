@@ -42,7 +42,7 @@
 
 		<dependency>
 			<groupId>com.sap.cds</groupId>
-			<artifactId>cds-feature-enterprise-messaging</artifactId>
+			<artifactId>cds-feature-kafka</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 

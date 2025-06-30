@@ -55,6 +55,11 @@
 			"authenticationType": "xsuaa"
 		},
 		{
+			"source": "^/dlq/webapp/(.*)$",
+			"localDir": "./",
+			"authenticationType": "xsuaa"
+		},
+		{
 			"source": "^/vue/(.*)$",
 			"localDir": "./",
 			"authenticationType": "xsuaa"
@@ -76,6 +81,11 @@
 		},
 		{
 			"source": "^/api/notes/(.*)",
+			"authenticationType": "xsuaa",
+			"destination": "backend"
+		},
+		{
+			"source": "^/api/dlq/(.*)",
 			"authenticationType": "xsuaa",
 			"destination": "backend"
 		},

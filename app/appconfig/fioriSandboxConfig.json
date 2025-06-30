@@ -20,14 +20,14 @@
                     "title": "Browse Books",
                     "description": "Find your favorite book"
                   }
-                },                
+                },
                 {
                   "id": "browse-genres",
                   "tileType": "sap.ushell.ui.tile.StaticTile",
                   "properties": {
                     "targetURL": "#Genres-display",
                     "title": "Browse Genres",
-                    "description": "Find your favorite genre" 
+                    "description": "Find your favorite genre"
                   }
                 }
               ]
@@ -72,7 +72,7 @@
                   "properties": {
                     "targetURL": "#Genres-manage",
                     "title": "Manage Genres",
-                    "description": "Add/edit/delete genres" 
+                    "description": "Add/edit/delete genres"
                   }
                 }
               ]
@@ -100,6 +100,24 @@
                     "targetURL": "#Addresses-display",
                     "title": "Show Shipping Addresses",
                     "description": "Find the right shipping address"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "DevOps",
+              "title": "DevOps",
+              "isPreset": true,
+              "isVisible": true,
+              "isGroupLocked": false,
+              "tiles": [
+                {
+                  "id": "dlq",
+                  "tileType": "sap.ushell.ui.tile.StaticTile",
+                  "properties": {
+                    "targetURL": "#DeadOutboxMessages-manage",
+                    "title": "Manage Outbox Dead Letter Queue",
+                    "description": "Revive and delete dead messages from the outbox dead letter queue"
                   }
                 }
               ]
@@ -219,6 +237,19 @@
                 "applicationType": "SAPUI5",
                 "additionalInformation": "SAPUI5.Component=addresses",
                 "url": "/addresses/webapp"
+              }
+            },
+            "dlq-manage": {
+              "semanticObject": "DeadOutboxMessages",
+              "action": "manage",
+              "signature": {
+                "parameters": {},
+                "additionalParameters": "allowed"
+              },
+              "resolutionResult": {
+                "applicationType": "SAPUI5",
+                "additionalInformation": "SAPUI5.Component=dlq",
+                "url": "/dlq/webapp"
               }
             }
           }
