@@ -69,12 +69,13 @@
           "id": "DeadOutboxMessagesList",
           "name": "sap.fe.templates.ListReport",
           "options": {
-            "settings" : {
-              "contextPath" : "/DeadOutboxMessages"
+            "settings": {
+              "contextPath": "/DeadOutboxMessages"
             }
           }
         }
-      }
+      },
+      "config": {}
     },
     "contentDensities": {
       "compact": true,

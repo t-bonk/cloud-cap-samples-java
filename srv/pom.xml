@@ -60,6 +60,11 @@
 
 		<dependency>
 			<groupId>com.sap.cds</groupId>
+			<artifactId>cds-feature-dev-dashboard</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sap.cds</groupId>
 			<artifactId>cds-feature-attachments</artifactId>
 			<version>${cds-feature-attachments.version}</version>
 			<scope>runtime</scope>

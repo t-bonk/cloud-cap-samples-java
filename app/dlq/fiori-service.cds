@@ -29,6 +29,16 @@ annotate OutboxDeadLetterQueueService.DeadOutboxMessages with @(UI : {
         {
           Value: lastAttemptTimestamp,
           Label : '{i18n>lastAttemptTimestamp}'
+        },
+        {
+          $Type : 'UI.DataFieldForAction',
+          Action: 'OutboxDeadLetterQueueService.revive',
+          Label : 'Revive'
+        },
+        {
+          $Type : 'UI.DataFieldForAction',
+          Action: 'OutboxDeadLetterQueueService.delete',
+          Label : 'Delete'
         }
     ],
     HeaderInfo : {
@@ -42,3 +52,17 @@ annotate OutboxDeadLetterQueueService.DeadOutboxMessages with @(UI : {
         Visualizations : ['@UI.LineItem']
     }
 });
+
+annotate OutboxDeadLetterQueueService.DeadOutboxMessages with actions {
+  @(SideEffects : {
+      //TargetEntities : ['OutboxDeadLetterQueueService.DeadOutboxMessages']
+      TargetProperties : ['in/attempts']
+      //TargetEntities : []
+  }) revive;
+  @(SideEffects : {
+      //TargetEntities : ['OutboxDeadLetterQueueService.DeadOutboxMessages']
+      //TargetProperties : [in]
+      // Marcel Wächter fragen, falls es nicht funktioniert
+      TargetEntities : ['OutboxDeadLetterQueueService.EntityContainer/DeadOutboxMessages']
+  }) delete;
+}

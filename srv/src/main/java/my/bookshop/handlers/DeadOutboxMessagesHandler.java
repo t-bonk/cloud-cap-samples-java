@@ -1,5 +1,7 @@
 package my.bookshop.handlers;
 
+import static com.sap.cds.ql.CQL.copy;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,9 @@ import com.sap.cds.ql.Select;
 import com.sap.cds.ql.StructuredType;
 import com.sap.cds.ql.cqn.CqnPredicate;
 import com.sap.cds.ql.cqn.CqnSelect;
+import com.sap.cds.ql.cqn.Modifier;
 import com.sap.cds.services.environment.CdsProperties.Outbox.OutboxServiceConfig;
+import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.outbox.OutboxService;
 import com.sap.cds.services.runtime.CdsRuntime;
 
@@ -36,6 +40,7 @@ import com.sap.cds.services.persistence.PersistenceService;
 
 import cds.gen.cds.outbox.Messages;
 import cds.gen.cds.outbox.Messages_;
+import cds.gen.outboxdeadletterqueueservice.DeadOutboxMessages;
 import cds.gen.outboxdeadletterqueueservice.DeadOutboxMessagesDeleteContext;
 import cds.gen.outboxdeadletterqueueservice.DeadOutboxMessagesReviveContext;
 import cds.gen.outboxdeadletterqueueservice.DeadOutboxMessages_;
@@ -51,34 +56,28 @@ public class DeadOutboxMessagesHandler implements EventHandler {
         this.db = db;
     }
 
-    @On(entity = DeadOutboxMessages_.CDS_NAME)
-    public void readDeadOutboxMessages(CdsReadEventContext context) {
+    @Before(entity = DeadOutboxMessages_.CDS_NAME)
+    public void modifyWhereClause(CdsReadEventContext context) {
         CqnSelect cqn = context.getCqn();
         Optional<Predicate> outboxFilters = this.createOutboxFilters(context.getCdsRuntime());
-        Select<StructuredType<?>> select = Select
-          .from(Messages_.CDS_NAME)
-          .columns(cqn.items());
+        CqnSelect modifiedCqn = copy(
+          cqn,
+          new Modifier() {
+              @Override
+              public CqnPredicate where(Predicate where) {
+                  if (where != null && outboxFilters.isPresent()) {
+                      return where.and(outboxFilters.get());
+                  } else if (where == null && outboxFilters.isPresent()) {
+                      return outboxFilters.get();
+                  } else if (where != null && !outboxFilters.isPresent()) {
+                      return where;
+                  } else {
+                      return null;
+                  }
+              }
+          });
 
-        select = select.groupBy(cqn.groupBy()).excluding(cqn.excluding());
-        if(cqn.having().isPresent()) {
-            select = select.having(cqn.having().get());
-        }
-        if(cqn.search().isPresent()) {
-            select.search(cqn.search().get());
-        }
-        if(cqn.where().isPresent()) {
-            CqnPredicate where = cqn.where().get();
-            if (outboxFilters.isPresent()) {
-                where = outboxFilters.get().and(where);
-            }
-            select = select.where(where);
-        } else if (outboxFilters.isPresent()) {
-            select = select.where(outboxFilters.get());
-        }
-        select = select.orderBy(cqn.orderBy()).limit(cqn.top(), cqn.skip()).inlineCount();
-
-        List<Row> deadMessages = this.db.run(select).list();
-        context.setResult(ResultBuilder.selectedRows(deadMessages).inlineCount(deadMessages.size()).result());
+        context.setCqn(modifiedCqn);
     }
 
     private Optional<Predicate> createOutboxFilters(CdsRuntime runtime) {
