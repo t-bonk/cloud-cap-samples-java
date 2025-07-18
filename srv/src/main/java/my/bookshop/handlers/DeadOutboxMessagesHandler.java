@@ -57,27 +57,21 @@ public class DeadOutboxMessagesHandler implements EventHandler {
     }
 
     @Before(entity = DeadOutboxMessages_.CDS_NAME)
-    public void modifyWhereClause(CdsReadEventContext context) {
-        CqnSelect cqn = context.getCqn();
+    public void addDeadEntryFilter(CdsReadEventContext context) {
         Optional<Predicate> outboxFilters = this.createOutboxFilters(context.getCdsRuntime());
-        CqnSelect modifiedCqn = copy(
-          cqn,
-          new Modifier() {
-              @Override
-              public CqnPredicate where(Predicate where) {
-                  if (where != null && outboxFilters.isPresent()) {
-                      return where.and(outboxFilters.get());
-                  } else if (where == null && outboxFilters.isPresent()) {
-                      return outboxFilters.get();
-                  } else if (where != null && !outboxFilters.isPresent()) {
-                      return where;
-                  } else {
-                      return null;
-                  }
-              }
-          });
 
-        context.setCqn(modifiedCqn);
+        if (outboxFilters.isPresent()) {
+            CqnSelect modifiedCqn =
+              copy(
+                  context.getCqn(),
+                  new Modifier() {
+                    @Override
+                    public CqnPredicate where(Predicate where) {
+                        return  outboxFilters.get().and(where);
+                    }
+                  });
+            context.setCqn(modifiedCqn);
+        }
     }
 
     private Optional<Predicate> createOutboxFilters(CdsRuntime runtime) {
