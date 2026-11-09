@@ -5,6 +5,8 @@ cds:
   dataSource.csv:
     initializationMode: always
     singleChangeset: true
+    paths:
+      - classpath:db/data/**
   odata-v4.endpoint.path: "/api"
   security.mock.users:
     admin:
@@ -26,4 +28,3 @@ spring:
 cds:
   dataSource:
     auto-config.enabled: false
-  
